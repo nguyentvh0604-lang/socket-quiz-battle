@@ -10,7 +10,9 @@ scores = {}
 question = [
 	("29 + 100 = ?","129")
 	(" Ngay Bac Ho doc ban tuyen ngon doc lap:", "2 thang 9 nam 1945")
-	(" oxi hoa Dong tao ra gì :", " oxit cua Dong")
+	(" oxi hoa Dong tao ra gì :", "oxit cua Dong")
+	(" Hien tai doi moi nhat cua Iphone: ","Iphone17")
+	(" C++ la mot dang ngon ngu lap trinh: ","Dung")
 ]
 
 def handle_client(conn, addr):
