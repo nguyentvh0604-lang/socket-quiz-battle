@@ -1,51 +1,52 @@
 import socket
-import threading 
+import threading
 
 HOST = '0.0.0.0'
 PORT = 9999
 
-client = []
 scores = {}
 
-question = [
-	("29 + 100 = ?","129")
-	(" Ngay Bac Ho doc ban tuyen ngon doc lap:", "2 thang 9 nam 1945")
-	(" oxi hoa Dong tao ra gì :", "oxit cua Dong")
-	(" Hien tai doi moi nhat cua Iphone: ","Iphone17")
-	(" C++ la mot dang ngon ngu lap trinh: ","Dung")
+questions = [
+    ("29 + 100 = ?", "129"),
+    ("Ngay Bac Ho doc ban tuyen ngon doc lap?", "2 thang 9 nam 1945"),
+    ("Oxi hoa Dong tao ra gi?", "oxit cua dong"),
+    ("Hien tai doi moi nhat cua Iphone?", "iphone 17"),
+    ("C++ la mot dang ngon ngu lap trinh?", "dung")
 ]
 
 def handle_client(conn, addr):
-	print(f"[NEW] {addr} conneted")
-	conn.send("nhap ten cua ban", endcode())
-	name = conn.recv(1024). decode().strip()
-	score[name] = 0
+    print(f"[NEW] {addr} connected")
 
-	for q, ans in questions:
-		conn.send(f"\nCauhoi: {q}\nTraloi: ", endcode())
-		reply = conn.recv(1024).decode().strip()
-		if reply.lower() == ans.lower():
-			score[name] += 1
-			conn.send(" Dung roi\n". endcode())
-		else:
-			conn.send(f"Sai roi...Dap an dung la: {ans}\n". endcode())
+    conn.send("Nhap ten cua ban: ".encode())
+    name = conn.recv(1024).decode().strip()
 
+    scores[name] = 0
 
-	result = "\n Ket qua cuoi cung: \n"
-	for k, v in score.items():
-		result += f"{k}: {v} diem\n"
+    for q, ans in questions:
+        conn.send(f"\nCau hoi: {q}\nTra loi: ".encode())
+        reply = conn.recv(1024).decode().strip()
 
-	conn.send(result.endcode())
-	conn.close()
+        if reply.lower() == ans.lower():
+            scores[name] += 1
+            conn.send("Dung roi!\n".encode())
+        else:
+            conn.send(f"Sai roi. Dap an dung la: {ans}\n".encode())
+
+    result = "\nKet qua cuoi cung:\n"
+    for k, v in scores.items():
+        result += f"{k}: {v} diem\n"
+
+    conn.send(result.encode())
+    conn.close()
 
 def start_server():
-	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server.blind((HOST, PORT))
-	server.listen()
-	print("[SERVER] dang chay...")
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen()
+    print("[SERVER] Dang chay...")
 
-	while True:
-		conn, addr = server.accept()
-		threading.Thread(target=handle_client, arg=(conn, addr)).start()
+    while True:
+        conn, addr = server.accept()
+        threading.Thread(target=handle_client, args=(conn, addr)).start()
 
-start server 
+start_server()
